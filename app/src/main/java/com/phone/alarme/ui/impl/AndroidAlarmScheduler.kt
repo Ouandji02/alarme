@@ -4,9 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import com.phone.alarme.ui.`interface`.AlarmScheduler
 import com.phone.alarme.ui.model.AlarmItem
-import java.time.ZoneId
 
 class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
 
@@ -16,9 +16,10 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra("EXTRA_MESSAGE", item.message)
         }
-        alarmManager.setAndAllowWhileIdle(
+        alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
-            item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+            item.time,
+            AlarmManager.INTERVAL_DAY,
             PendingIntent.getBroadcast(
                 context,
                 item.hashCode(),
@@ -26,14 +27,18 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
+        Toast.makeText(context, "Alarme activée", Toast.LENGTH_LONG).show()
     }
 
     override fun cancel(item: AlarmItem) {
-        PendingIntent.getBroadcast(
-            context,
-            item.hashCode(),
-            Intent(context, AlarmReceiver::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        alarmManager.cancel(
+            PendingIntent.getBroadcast(
+                context,
+                item.hashCode(),
+                Intent(context, AlarmReceiver::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
         )
+        Toast.makeText(context, "Alarme annulée", Toast.LENGTH_LONG).show()
     }
 }
