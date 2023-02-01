@@ -17,7 +17,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         context!!.startService(Intent(context, MyServices::class.java))
         val i = Intent(context, MainActivity2::class.java).apply {
-            putExtra("id_alarme",message)
+            putExtra("ID_ALARM",message)
         }
         val pendingIntent = PendingIntent.getActivity(context, 0, i, 0)
         val builder = NotificationCompat.Builder(context!!, "android")

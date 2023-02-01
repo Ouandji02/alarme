@@ -38,7 +38,7 @@ class MainActivity2 : ComponentActivity() {
                     ) {
                         Button(onClick = {
                             val alarmScheduler = AndroidAlarmScheduler(context)
-                           context.intent.getStringExtra("id_alarme")!!.toInt().let(alarmScheduler::cancel)
+                           context.intent.getStringExtra("ID_ALARM")!!.toInt().let(alarmScheduler::cancel)
                         }) {
                             Text("Arreter l'alarme")
                         }
