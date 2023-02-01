@@ -14,7 +14,8 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
 
     override fun scheduler(item: AlarmItem) {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("EXTRA_MESSAGE", item.message)
+            putExtra("EXTRA_MESSAGE", item.hashCode().toString())
+
         }
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
@@ -30,15 +31,16 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
         Toast.makeText(context, "Alarme activée", Toast.LENGTH_LONG).show()
     }
 
-    override fun cancel(item: AlarmItem) {
+    override fun cancel(hashcode1: Int) {
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
-                item.hashCode(),
+                hashcode1,
                 Intent(context, AlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
+        context.stopService(Intent(context, MyServices::class.java))
         Toast.makeText(context, "Alarme annulée", Toast.LENGTH_LONG).show()
     }
 }

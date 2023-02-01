@@ -53,7 +53,7 @@ fun Screen(context: Context) {
         { _, hour, minute ->
             timeText = (LocalTime.of(hour, minute).toString())
             hours = hour
-            minutes = minute
+            minutes = minute-1
         },
         time.hour,
         time.minute,
@@ -97,7 +97,7 @@ fun Screen(context: Context) {
                     time = calendar.timeInMillis,
                     message = "Launch alarm"
                 )
-                alarmItem.let(androidAlarmScheduler::cancel)
+                alarmItem.hashCode().let(androidAlarmScheduler::cancel)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,50 +108,7 @@ fun Screen(context: Context) {
     }
 }
 
-@Composable
-fun Alarm(context: Context) {
-    val androidAlarmScheduler = AndroidAlarmScheduler(context)
-    var time by remember { mutableStateOf("0") }
-    var message by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        TextField(
-            value = time,
-            onValueChange = { new -> time = new },
-            label = { Text("Entrer le temps de declenchement") })
-        TextField(
-            value = message,
-            onValueChange = { new -> message = new },
-            label = { Text(text = "Entre le message") })
-        Row() {
-            Button(onClick = {
-                val alarmItem = AlarmItem(
-                    time = LocalDateTime.now().plusSeconds(time.toLong()) as Long,
-                    message = message
-                )
-                alarmItem.let(androidAlarmScheduler::scheduler)
-                time = ""
-                message = ""
-            }) {
-                Text("Lancer")
-            }
-            Button(onClick = {
-                val alarmItem = AlarmItem(
-                    time = LocalDateTime.now().plusSeconds(time.toLong()) as Long,
-                    message = message
-                )
-                alarmItem.let(androidAlarmScheduler::cancel)
-            }) {
-                Text("Annuler")
-            }
-        }
-
-    }
-}
 
 fun createNotification(context: Context) {
     val name: CharSequence = "androidinfinix"
